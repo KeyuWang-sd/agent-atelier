@@ -1,6 +1,6 @@
 <div align="center">
 
-# Caker
+# Agent Atelier
 
 **跑在本机的 Agent Skills 助手 —— LangGraph 驱动的对话式 Agent 运行时**
 
@@ -14,7 +14,7 @@ Python 3.11+ · FastAPI · LangGraph · PostgreSQL/pgvector · Chroma
 
 ## 项目介绍
 
-Caker 是一个跑在本机的 **Agent Skills 助手**：浏览器里对话，Agent 在**当前会话工作区**里读文件、写结果、按技能执行任务。每个对话有独立工作区（`user` + `session` 双层隔离），上传进 `data/uploads/`，工具只在该目录内读写，不碰你电脑上的其它路径。
+Agent Atelier 是一个跑在本机的 **Agent Skills 助手**：浏览器里对话，Agent 在**当前会话工作区**里读文件、写结果、按技能执行任务。每个对话有独立工作区（`user` + `session` 双层隔离），上传进 `data/uploads/`，工具只在该目录内读写，不碰你电脑上的其它路径。
 
 LangGraph 负责流程调度，FastAPI 提供服务，自带 Web 聊天界面，数据落在本机 `var/` 与 PostgreSQL——不绑任何云厂商，一条 `uvicorn` 即可起。
 
@@ -64,8 +64,8 @@ LangGraph 负责流程调度，FastAPI 提供服务，自带 Web 聊天界面，
 ## 快速开始
 
 ```bash
-git clone https://github.com/KeyuWang-sd/cakertest.git
-cd cakertest
+git clone https://github.com/KeyuWang-sd/agent-atelier.git
+cd agent-atelier
 cp .env.example .env          # 填写 LLM_* 与 PG_DSN
 docker compose up -d postgres
 pip install -e .
