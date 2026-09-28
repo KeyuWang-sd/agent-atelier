@@ -1,0 +1,41 @@
+# Caker 本身用宿主机 uvicorn 启动（见 README）
+#
+# 本地开发默认需要 Postgres + pgvector（Checkpoint + MemPalace）：
+#   docker compose up -d postgres
+#
+# MinIO 仍为可选：
+#   docker compose --profile optional up -d minio
+
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_USER: agent
+      POSTGRES_PASSWORD: agent
+      POSTGRES_DB: agent_skills
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U agent -d agent_skills"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  minio:
+    profiles: ["optional"]
+    image: minio/minio:latest
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: minio
+      MINIO_ROOT_PASSWORD: minio123456
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - miniodata:/data
+
+volumes:
+  pgdata:
+  miniodata:

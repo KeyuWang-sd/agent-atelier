@@ -1,0 +1,19 @@
+.env
+.env.*
+!.env.example
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+var/
+dist/
+
+# 仅本地给 Agent/人看的贴码格式约定，不纳入版本库
+docs/code-response-convention.md
+*.egg-info/
+
+# stray files from mistyped shell redirects
+/-H
+/-d
