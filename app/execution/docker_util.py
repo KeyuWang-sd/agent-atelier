@@ -31,21 +31,21 @@ def _docker_slug(value: str) -> str:
 def venue_container_name(user_id: str, session_id: str) -> str:
     uid = _docker_slug(user_id)
     sid = _docker_slug(session_id)
-    base = f"caker-venue-{uid}-{sid}"
+    base = f"atelier-venue-{uid}-{sid}"
     if len(base) <= 63:
         return base
     digest = hashlib.sha256(f"{user_id}:{session_id}".encode()).hexdigest()[:10]
-    return f"caker-venue-{digest}"
+    return f"atelier-venue-{digest}"
 
 
 def compose_project_name(user_id: str, session_id: str) -> str:
     uid = _docker_slug(user_id)
     sid = _docker_slug(session_id)
-    base = f"caker-{uid}-{sid}"
+    base = f"atelier-{uid}-{sid}"
     if len(base) <= 63:
         return base
     digest = hashlib.sha256(f"{user_id}:{session_id}".encode()).hexdigest()[:16]
-    return f"caker-{digest}"
+    return f"atelier-{digest}"
 
 
 def resolve_pull_image(image: str) -> str:

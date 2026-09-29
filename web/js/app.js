@@ -950,9 +950,9 @@ async function initHealth() {
 }
 
 async function importLegacyFromBrowserIfNeeded() {
-  const sessionsKey = "caker.web.sessions";
-  const usersKey = "caker.web.users";
-  const settingsKey = "caker.web.settings";
+  const sessionsKey = "atelier.web.sessions";
+  const usersKey = "atelier.web.users";
+  const settingsKey = "atelier.web.settings";
   if (!localStorage.getItem(sessionsKey) && !localStorage.getItem(usersKey)) {
     return;
   }

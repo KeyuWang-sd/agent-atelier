@@ -5,7 +5,7 @@
 ## 1. 启动与访问
 
 ```bash
-cd caker
+cd agent-atelier
 cp .env.example .env
 # 编辑 .env：LLM_*、WORKSPACE_ROOT 等
 pip install -e .

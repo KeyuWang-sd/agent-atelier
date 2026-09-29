@@ -49,7 +49,7 @@ def test_compose_status_running(ws_env, monkeypatch):
     status = compose_status("alice", "sess1")
     assert status["running"] is True
     assert status["compose_file"] == "compose/docker-compose.yml"
-    assert status["project"] == "caker-alice-sess1"
+    assert status["project"] == "atelier-alice-sess1"
 
 
 def test_compose_up_invokes_docker(ws_env, monkeypatch):

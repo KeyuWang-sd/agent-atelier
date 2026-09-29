@@ -7,7 +7,7 @@ Caker 本体在**宿主机**运行（`uvicorn`），不进 Docker。V2 提供 **
 1. 主站选择会话 → **进入执行环境**（确认）→ `sandbox.html`
 2. 自备 `compose/docker-compose.yml` 后，点击左下角 **「启动环境」**（宿主机 `docker compose up -d`）
 3. 若 compose 栈已 up，终端 `docker compose exec` 进入首个服务（优先名为 `dev`）
-4. 否则附着 **venue 壳** 容器 `caker-venue-{user}-{session}`，挂载整个会话目录到 `/workspace`
+4. 否则附着 **venue 壳** 容器 `agent-atelier-venue-{user}-{session}`，挂载整个会话目录到 `/workspace`
 5. **「停止环境」** 在宿主机 `compose down`；**退出工作台** 仅断开 WebSocket，不自动 down
 
 ## Agent 工具（V2.1）

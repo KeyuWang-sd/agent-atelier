@@ -32,7 +32,7 @@ async def lifespan(app: FastAPI):
         yield
 
 
-app = FastAPI(title="caker", lifespan=lifespan)
+app = FastAPI(title="Agent Atelier", lifespan=lifespan)
 app.include_router(chat_router)
 app.include_router(admin_router)
 app.include_router(web_data_router)

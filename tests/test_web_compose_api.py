@@ -46,7 +46,7 @@ def test_compose_up_api(tmp_path, monkeypatch):
             "ok": True,
             "running": True,
             "compose_file": "compose/docker-compose.yml",
-            "project": "caker-u1-s1",
+            "project": "atelier-u1-s1",
             "stdout": "ok",
             "stderr": "",
         },

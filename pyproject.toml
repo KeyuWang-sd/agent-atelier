@@ -1,5 +1,5 @@
 [project]
-name = "caker"
+name = "agent-atelier"
 version = "0.1.0"
 description = "Mini Agent Skills runtime scaffold (per docs/agent_skills_build_guide.md)"
 readme = "README.md"

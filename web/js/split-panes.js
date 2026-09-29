@@ -3,7 +3,7 @@
  * Uses overlay handles (no extra flex siblings). Persists to sessionStorage.
  */
 
-const STORAGE_KEY = "caker.sandbox.layout";
+const STORAGE_KEY = "atelier.sandbox.layout";
 
 const DEFAULTS = {
   left: 224,

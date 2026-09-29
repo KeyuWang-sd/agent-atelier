@@ -110,7 +110,7 @@ curl -N -X POST http://127.0.0.1:8000/api/v2/stream \
   -d '{"message":"数到5"}'
 ```
 
-流式请求须打到**本机 caker**（如 `127.0.0.1:8000`），不要对上游 LLM 域名拼 `/api/v2/stream`。经 nginx 反代时需关 SSE 缓冲（`proxy_buffering off`）。
+流式请求须打到**本机 agent-atelier**（如 `127.0.0.1:8000`），不要对上游 LLM 域名拼 `/api/v2/stream`。经 nginx 反代时需关 SSE 缓冲（`proxy_buffering off`）。
 
 ---
 

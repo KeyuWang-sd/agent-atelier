@@ -2,7 +2,7 @@
 
 > 用法：每个里程碑 M# 都能跑出来一个比上一个强一点点的 demo；不绿就别往下走。
 
-### 本地部署范围（caker 默认）
+### 本地部署范围（agent-atelier 默认）
 
 本仓库跟写路线面向**单机本地开发**，不实现原报告中的分布式能力：
 
@@ -15,18 +15,18 @@
 
 里程碑 **M0–M11、M14–M15** 跟完即可跑通本地 Agent；**不跟**原指南中的 Pipeline / 游标两节（下文已删）。
 
-### caker 仓库约定（与下文骨架的差异）
+### agent-atelier 仓库约定（与下文骨架的差异）
 
-跟写 **本仓库（caker）** 时，以下约定优先于各节里较早的通用骨架；各 M 节末尾也会用 **「caker」** 标注要点。
+跟写 **本仓库（agent-atelier）** 时，以下约定优先于各节里较早的通用骨架；各 M 节末尾也会用 **「agent-atelier」** 标注要点。
 
-| 主题 | 通用骨架 / 原报告 | **caker 现状** |
+| 主题 | 通用骨架 / 原报告 | **agent-atelier 现状** |
 |------|-------------------|----------------|
 | 状态字段 | `result_text` | **`result`**；用户句走 **`input`** + **`inject_user_node`**（非把 HumanMessage 塞进首轮 `messages`） |
 | 工具注册 | 各节在 `nodes.py` 里写 `_TOOLS = [...]` | **`app/tools/base.py`** 的 `build_default_tools()`；`nodes.py` 仅 `_TOOLS = build_default_tools()` |
 | 技能包路径 | 有时写 cwd 相对 `skills/` | 仓库根 **`skills/`**（`app/skills/manager.py` 锚到仓库根索引 SKILL.md） |
 | 配置 / `.env` | `OPENAI_*` | **`LLM_*`** → `settings.llm_*`（见 §1） |
 | 图执行 API | — | FastAPI 用 **`await GRAPH.ainvoke` / `astream_events`**（异步） |
-| M7 工作区 | `skills/` symlink「可选」 | M7 可不做；**M9 起在 caker 中为必需**（见 M9） |
+| M7 工作区 | `skills/` symlink「可选」 | M7 可不做；**M9 起在 agent-atelier 中为必需**（见 M9） |
 | M8 系统提示 | 纯英文 Agent / 硬编码在 `nodes.py` | 仓库根 **`system_prompt.md`** + `SkillManager.render_system_prompt()`；`{skills_meta}` 动态注入；正文仅面向 LLM（维护说明见 README） |
 | M10 检查点 | 文中示例同步 `SqliteSaver` / 本地曾用 SQLite | **`AsyncPostgresSaver`**（`PG_DSN`）+ FastAPI `lifespan`；须与 **`ainvoke`** 配套（见 M10） |
 
@@ -88,10 +88,10 @@ CHROMA_PATH=./var/chroma
 
 ## 2. 项目骨架（M0 之前先建好）
 
-下图以 **`caker` 仓库根** 为准（早期草稿曾写 `mini_skills/` 包裹目录，**实际仓库没有这一层**）。
+下图以 **`agent-atelier` 仓库根** 为准（早期草稿曾写 `mini_skills/` 包裹目录，**实际仓库没有这一层**）。
 
 ```
-caker/                            # 仓库根 = 你 clone 下来的目录
+agent-atelier/                            # 仓库根 = 你 clone 下来的目录
 ├── pyproject.toml
 ├── .env.example                  # LLM_* / WORKSPACE_ROOT / CHROMA_PATH
 ├── docker-compose.yaml           # 本地默认只需 Chroma（PG/MinIO 可选）
@@ -115,7 +115,7 @@ caker/                            # 仓库根 = 你 clone 下来的目录
 │   │   └── sse.py                # M4
 │   ├── tools/
 │   │   ├── __init__.py
-│   │   ├── base.py               # M5+ build_default_tools()（caker 统一注册工具）
+│   │   ├── base.py               # M5+ build_default_tools()（agent-atelier 统一注册工具）
 │   │   ├── read_tool.py          # M5 ✅
 │   │   ├── call_skill_tool.py    # M8
 │   │   ├── run_py_script_tool.py # M9
@@ -150,7 +150,7 @@ caker/                            # 仓库根 = 你 clone 下来的目录
 
 | 标记 | 含义 |
 |------|------|
-| `M# ✅` | 该里程碑在 caker 主线已落地（以 README「已完成」为准） |
+| `M# ✅` | 该里程碑在 agent-atelier 主线已落地（以 README「已完成」为准） |
 | `M#` | 跟写目标，尚未实现或进行中 |
 | **不创建** | 原报告有、本地路线故意跳过（勿照抄建目录） |
 
@@ -179,7 +179,7 @@ caker/                            # 仓库根 = 你 clone 下来的目录
 ### 关键代码骨架
 
 ```python
-# app/config.py  [我写]（与当前 caker 仓库一致）
+# app/config.py  [我写]（与当前 agent-atelier 仓库一致）
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -201,7 +201,7 @@ settings = Settings()
 # app/main.py  [一起写]
 from fastapi import FastAPI
 
-app = FastAPI(title="caker")
+app = FastAPI(title="agent-atelier")
 
 @app.get("/health")
 async def health():
@@ -369,8 +369,8 @@ from langchain_core.messages import BaseMessage
 
 class GraphState(TypedDict):
     messages: Annotated[list[BaseMessage], add_messages]
-    input: str                      # 本轮用户句（caker：由 inject_user_node 写入 messages）
-    result: str                     # 聚合回复（caker 不用 result_text）
+    input: str                      # 本轮用户句（agent-atelier：由 inject_user_node 写入 messages）
+    result: str                     # 聚合回复（agent-atelier 不用 result_text）
     skip_inject_system: bool        # M10 起使用；M3–M9 先恒为 False
 ```
 
@@ -384,14 +384,14 @@ class GraphState(TypedDict):
 ```
 
 ```python
-# app/runtime/graph.py  [你手敲]（caker 最小图含 inject_user）
+# app/runtime/graph.py  [你手敲]（agent-atelier 最小图含 inject_user）
     g.add_edge("start", "inject_system")
     g.add_edge("inject_system", "inject_user")
     g.add_edge("inject_user", "llm")
     g.add_edge("llm", "end")
 ```
 
-**caker**：`chat-graph` 的 `ainvoke` 输入为 `messages: []`、`input: body.message`、`result: ""`，见 M7。
+**agent-atelier**：`chat-graph` 的 `ainvoke` 输入为 `messages: []`、`input: body.message`、`result: ""`，见 M7。
 
 ### 验证
 ```bash
@@ -456,7 +456,7 @@ async def stream_chat(body: EchoIn):
             "result": "",
             "skip_inject_system": False,
         }
-        # caker：与 chat-graph 相同，走 inject_user；勿把 HumanMessage 直接塞进 messages
+        # agent-atelier：与 chat-graph 相同，走 inject_user；勿把 HumanMessage 直接塞进 messages
         # TODO: 用 GRAPH.astream_events(inputs, version="v2")
         # 把 on_chat_model_stream 的 token 拼成 SSE event=delta
         # 最后吐 event=done
@@ -537,7 +537,7 @@ def get_llm_with_tools(tools):
 ```
 
 ```python
-# app/tools/base.py  [一起写]（caker：工具集中注册）
+# app/tools/base.py  [一起写]（agent-atelier：工具集中注册）
 def build_default_tools() -> list[BaseTool]:
     return [ReadTool()]
 
@@ -612,12 +612,12 @@ def build_graph():
     g.add_node("start", nodes.start_node)
     g.add_node("inject_system", nodes.inject_system_node)
     g.add_node("llm", nodes.llm_node)
-    g.add_node("tools", nodes.tools_node)   # caker：在 nodes.py 定义 ToolNode(_TOOLS)
+    g.add_node("tools", nodes.tools_node)   # agent-atelier：在 nodes.py 定义 ToolNode(_TOOLS)
     g.add_node("end", nodes.end_node)
 
     g.add_edge(START, "start")
     g.add_edge("start", "inject_system")
-    g.add_edge("inject_system", "inject_user")   # caker
+    g.add_edge("inject_system", "inject_user")   # agent-atelier
     g.add_edge("inject_user", "llm")
     g.add_conditional_edges("llm", route_after_llm,
                             {"tools": "tools", "end": "end"})
@@ -681,7 +681,7 @@ class WorkspaceManager:
         # 2. 路径 = self.root / session_id
         # 3. mkdir(parents=True, exist_ok=True)
         # 4. 创建 outputs/、data/ 子目录（读写）
-        # 5. symlink skills/ → 仓库根 skills/（caker：M7 可省略，M9 必需，见 M9）
+        # 5. symlink skills/ → 仓库根 skills/（agent-atelier：M7 可省略，M9 必需，见 M9）
         ...
 
     def resolve(self, session_id: str, rel_path: str) -> Path:
@@ -701,7 +701,7 @@ manager = WorkspaceManager()
 ```
 
 ```python
-# app/api/chat.py  [一起写]（caker）
+# app/api/chat.py  [一起写]（agent-atelier）
 def _graph_config(session_id: str | None) -> dict:
     sid = (session_id or "demo").strip() or "demo"
     return {"configurable": {"session_id": sid}}   # M10 起再加 thread_id
@@ -826,7 +826,7 @@ FRONT_MATTER_RE = re.compile(r"^---\s*\n(.*?)\n---\s*\n", re.DOTALL)
 
 class SkillsManager:
     def __init__(self, root: str | Path | None = None):
-        # caker：默认锚到仓库根 skills/，见 app/skills/manager.py
+        # agent-atelier：默认锚到仓库根 skills/，见 app/skills/manager.py
         self.root = Path(root or _REPO_ROOT / "skills").resolve()
         self._index: dict[str, Path] = {}
 
@@ -898,7 +898,7 @@ def inject_system_node(state: GraphState) -> dict:
     return {"messages": [SystemMessage(content=skills_manager.render_system_prompt())]}
 ```
 
-**caker**：`reindex()` 遍历 **`skills/<子目录>/SKILL.md`**（`if not child.is_dir(): continue`）。
+**agent-atelier**：`reindex()` 遍历 **`skills/<子目录>/SKILL.md`**（`if not child.is_dir(): continue`）。
 
 ### 验证
 ```bash
@@ -929,7 +929,7 @@ M8。
 
 | 文件 | 分工 |
 |------|------|
-| `app/workspace/manager.py` | `[一起写]` `session_dir` 内 **symlink** `skills/` → 仓库根 `skills/`（caker 必需） |
+| `app/workspace/manager.py` | `[一起写]` `session_dir` 内 **symlink** `skills/` → 仓库根 `skills/`（agent-atelier 必需） |
 | `app/tools/run_py_script_tool.py` | `[你手敲]` 子进程执行、超时、env 注入 |
 | `app/tools/base.py` | `[一起写]` 注册 `RunPyScriptTool` |
 
@@ -954,7 +954,7 @@ class RunPyScriptTool(BaseTool):
     args_schema: type[BaseModel] = RunPyInput
 
     def _run(self, rel_path, args, timeout_sec, *, run_manager=None, **_):
-        # caker：与 ReadTool 相同，用 _session_id_from_run_manager(run_manager)
+        # agent-atelier：与 ReadTool 相同，用 _session_id_from_run_manager(run_manager)
         # TODO:
         # 1. rel_path 必须以 "skills/" 开头
         # 2. target = manager.resolve(session_id, rel_path)  # 路径相对 WORKSPACE_ROOT/<sid>/
@@ -1015,7 +1015,7 @@ M9。依赖：`langgraph-checkpoint-postgres`、`psycopg[binary,pool]`（或 `uv
 
 ### 与 M3–M7 图结构的差异（必读）
 
-M3–M9（**做 M10 之前**，含当前 caker 在 M8–M9 阶段）：
+M3–M9（**做 M10 之前**，含当前 agent-atelier 在 M8–M9 阶段）：
 
 ```text
 START → start → inject_system → inject_user → llm ⇄ tools → end
@@ -1053,7 +1053,7 @@ START → start ──route_after_start──┬→ inject_system → inject_use
 ```
 
 ```python
-# app/runtime/graph.py  [一起写]（caker + FastAPI 异步）
+# app/runtime/graph.py  [一起写]（agent-atelier + FastAPI 异步）
 from pathlib import Path
 from langgraph.checkpoint.postgres.aio import AsyncPostgresSaver
 
@@ -1111,7 +1111,7 @@ inputs = {
 await GRAPH.ainvoke(inputs, config=_graph_config(body.session_id))
 ```
 
-**与 caker 仓库约定**：聚合字段用 `result`；`end_node` **不必**手动 save——检查点每步自动写入 SQLite。
+**与 agent-atelier 仓库约定**：聚合字段用 `result`；`end_node` **不必**手动 save——检查点每步自动写入 SQLite。
 
 ### 验证
 ```bash
@@ -1143,7 +1143,7 @@ curl -s -X POST http://127.0.0.1:8000/api/v2/chat-graph \
 
 ### 目标
 - 多一个 `result_set(text="...")` 工具，模型用它**正式产出最终回答**。
-- `apply_result_set` 节点把工具结果里的 `text` 取出写入 **`state["result"]`**（caker 不用 `result_text`），并 `result_set_handled=True`，路由直奔 `end`。
+- `apply_result_set` 节点把工具结果里的 `text` 取出写入 **`state["result"]`**（agent-atelier 不用 `result_text`），并 `result_set_handled=True`，路由直奔 `end`。
 - 流式请求时**不暴露**该工具（流式靠 token 流回结果，不需要 `result_set`）。
 
 ### 前置
@@ -1186,7 +1186,7 @@ def apply_result_set_node(state, config):
     last = state["messages"][-1]
     # TODO:
     # 1. 仅当 last 是 ToolMessage 且 last.name == "result_set"
-    # 2. 写 result = last.content（caker 字段名 result）
+    # 2. 写 result = last.content（agent-atelier 字段名 result）
     # 3. result_set_handled = True
     ...
 ```
@@ -1204,7 +1204,7 @@ def route_after_tools(state) -> str:
 # app/runtime/state.py 增量
 class GraphState(TypedDict):
     messages: Annotated[list[BaseMessage], add_messages]
-    result: str                    # caker
+    result: str                    # agent-atelier
     result_set_handled: bool
     skip_inject_system: bool
     streaming: bool
@@ -1425,7 +1425,7 @@ async def end_node(state, config):
     state_store.save(sid, state["messages"])
     sm = summarize(state["messages"]).content
     chroma_store.add(uuid.uuid4().hex, sm, {"session_id": sid, "user_id": user_id})
-    return {"result": last_ai.content}   # caker
+    return {"result": last_ai.content}   # agent-atelier
 ```
 
 ### 验证

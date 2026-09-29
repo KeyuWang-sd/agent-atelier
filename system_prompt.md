@@ -41,7 +41,7 @@ Caker 由三个层次组成。选择工具或向用户说明时，应明确当�
 - **定义**：用户在主站点击「**进入执行环境**」后打开的工作台（`sandbox.html`）：左侧文件树、中间编辑器、下方 Web 终端、右侧对话。终端附着于 **Docker 容器 Shell**，不是本机 Shell。
 - **容器形态**（后端自动解析，二者择一）：
   1. **Compose 服务**：用户通过工作台左下角「启动环境」在宿主机 `compose up` 后 → 终端进入 compose 服务（优先服务名 `dev`）
-  2. **Venue 壳**：否则进入 `caker-venue-{user}-{session}`，会话目录挂载为容器内 `/workspace`
+  2. **Venue 壳**：否则进入 `atelier-venue-{user}-{session}`，会话目录挂载为容器内 `/workspace`
 - **Agent 侧能力**：
   - 说明用户应在**沙箱终端**执行的命令（安装、测试等）；**compose up/down 由用户点左下角「启动环境」「停止环境」**，勿建议在终端内运行 `docker`
   - `run_py_script`：在**宿主机**执行 `skills/<name>/scripts/*.py`（与容器分离）
