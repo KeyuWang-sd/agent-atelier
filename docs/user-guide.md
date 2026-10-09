@@ -1,6 +1,6 @@
-# Caker 用户指南
+# Atelier 用户指南
 
-面向**在浏览器里使用 Caker** 的人。项目介绍见 [README](../README.md)；开发验收见 [里程碑进度](milestones.md)、[文档索引](README.md)。
+面向**在浏览器里使用 Atelier** 的人。项目介绍见 [README](../README.md)；开发验收见 [里程碑进度](milestones.md)、[文档索引](README.md)。
 
 ## 1. 启动与访问
 

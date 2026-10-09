@@ -32,10 +32,13 @@ def _write_compose(ws_root: Path) -> Path:
     return compose_file
 
 
-def test_compose_status_not_found(ws_env):
-  _, tmp_path = ws_env
-  with pytest.raises(ComposeError, match="not found"):
-      compose_status("alice", "sess1")
+def test_compose_status_not_found(ws_env, monkeypatch):
+    _, tmp_path = ws_env
+    # compose 文件缺失检查在 docker 可用性检查之后；mock 掉 docker，
+    # 使测试在未安装/未启动 Docker 的主机上也能验证 "not found" 错误路径。
+    monkeypatch.setattr("app.execution.compose_control.docker_available", lambda: True)
+    with pytest.raises(ComposeError, match="not found"):
+        compose_status("alice", "sess1")
 
 
 def test_compose_status_running(ws_env, monkeypatch):

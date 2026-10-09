@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 
 WELCOME_BANNER = (
     "\r\n"
-    "=== Caker 执行环境工作台 ===\r\n"
+    "=== Atelier 执行环境工作台 ===\r\n"
     "· 请在 workspace 自备 compose/docker-compose.yml\r\n"
     "· 使用左下角「启动环境」/「停止环境」在宿主机启停 compose（勿在终端内运行 docker）\r\n"
     "· 环境启动后，终端将 attach 到 compose 服务（优先 dev）\r\n"

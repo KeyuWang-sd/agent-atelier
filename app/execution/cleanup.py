@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 
 
 def destroy_session_venue(user_id: str, session_id: str) -> None:
-    """Remove Caker-managed venue shell container for a session."""
+    """Remove Atelier-managed venue shell container for a session."""
     destroy_container(venue_container_name(user_id, session_id))
 
 

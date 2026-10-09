@@ -61,7 +61,7 @@ def test_inject_system_node_returns_system_message():
     assert "messages" in out
     msg = out["messages"][0]
     assert isinstance(msg, SystemMessage)
-    assert "Caker" in msg.content
+    assert "Atelier" in msg.content
     assert "demo-hello" in msg.content or "file-extract" in msg.content
 
 

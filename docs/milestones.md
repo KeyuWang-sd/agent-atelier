@@ -210,7 +210,7 @@ curl -s -X POST http://127.0.0.1:8000/api/v2/chat-graph \
 
 | 项 | 说明 |
 |----|------|
-| 文件 | 仓库根 [system_prompt.md](../system_prompt.md)，与 `skills/` 平级；正文**仅**面向对话中的 Caker，不含部署说明 |
+| 文件 | 仓库根 [system_prompt.md](../system_prompt.md)，与 `skills/` 平级；正文**仅**面向对话中的 Atelier，不含部署说明 |
 | 注入 | `inject_system_node()` → `skills_manager.render_system_prompt()` → `SystemMessage`；占位符 `{skills_meta}` 由 `list_meta()` 替换 |
 | 与 [AGENTS.md](../AGENTS.md) | AGENTS 管协作与改仓库授权；system_prompt 管工具使用与工作区行为 |
 | 修改后 | 编辑 `system_prompt.md` 并重启 uvicorn；已有 `thread_id` 的多轮会话仍保留首轮 SystemMessage（M10） |

@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from pathlib import Path
+
 from fastapi.testclient import TestClient
 
 from app.main import app
@@ -47,4 +49,12 @@ def test_workspace_reveal_returns_ok(tmp_path, monkeypatch):
     assert r.status_code == 200
     body = r.json()
     assert body["opened_with"] == "mock"
-    assert "wsl.localhost" in body["session_path_windows"]
+    # session_path_windows 是平台感知的:WSL 下为 UNC(\\wsl.localhost\...),
+    # macOS/Linux 原生路径直接返回。断言按平台分支,两种合法形态都接受。
+    from app.web_store.workspace_info import linux_path_to_windows  # noqa: E402
+
+    if linux_path_to_windows(str(tmp_path.resolve())):  # WSL 环境 → 期望 UNC
+        assert "wsl.localhost" in body["session_path_windows"]
+    else:  # macOS / 原生 Linux → 期望返回解析后的原生路径
+        assert body["session_path_windows"].endswith("/u1/s1")
+        assert Path(body["session_path_windows"]).is_absolute()

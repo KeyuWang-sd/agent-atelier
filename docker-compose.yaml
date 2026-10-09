@@ -1,4 +1,4 @@
-# Caker 本身用宿主机 uvicorn 启动（见 README）
+# Atelier 本身用宿主机 uvicorn 启动（见 README）
 #
 # 本地开发默认需要 Postgres + pgvector（Checkpoint + MemPalace）：
 #   docker compose up -d postgres

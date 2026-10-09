@@ -1,6 +1,6 @@
 # CEER V2.1：沙箱工作台 + Agent 能力
 
-Caker 本体在**宿主机**运行（`uvicorn`），不进 Docker。V2 提供 **执行环境工作台**（`sandbox.html`）：可拖拽三栏、文件树、CodeMirror 编辑器、Web 终端、与主站同款 Composer 对话；**compose 启停仅通过左下角按钮在宿主机执行**。
+Atelier 本体在**宿主机**运行（`uvicorn`），不进 Docker。V2 提供 **执行环境工作台**（`sandbox.html`）：可拖拽三栏、文件树、CodeMirror 编辑器、Web 终端、与主站同款 Composer 对话；**compose 启停仅通过左下角按钮在宿主机执行**。
 
 ## 用户流程
 
